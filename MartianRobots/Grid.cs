@@ -2,11 +2,9 @@
 
 public class Grid
 {
-    public event Action<string>? RobotLost;
-
     private readonly int height;
     private readonly int width;
-    private readonly Dictionary<(int, int), Robot> robots;
+    private readonly Dictionary<Robot, (int, int)> robotPositions;
     private readonly HashSet<(int, int)> scentPositions;
 
     public Grid(int width, int height)
@@ -17,7 +15,7 @@ public class Grid
         }
         this.width = width;
         this.height = height;
-        robots = new Dictionary<(int, int), Robot>();
+        robotPositions = [];
         scentPositions = [];
     }
 
@@ -25,24 +23,45 @@ public class Grid
     {
         ArgumentNullException.ThrowIfNull(robot);
         var position = (robot.X, robot.Y);
-        if (robots.ContainsKey(position))
+
+        if (IsOutOfBounds(position))
+        {
+            throw new ArgumentException($"Robot position {position} is out of grid bounds.");
+        };
+        if (robotPositions.ContainsValue(position))
         {
             throw new InvalidOperationException($"A robot already exists at position {position}.");
         }
-        robots[position] = robot;
-        robot.MoveRequested += OnRobotMoved;
+
+        robotPositions[robot] = position;
     }
 
-    public void OnRobotMoved(Robot robot)
+    public (bool canMove, bool lost) TryMoveRobot(Robot robot, (int X, int Y) newPosition)
     {
-        if (robot.X < 0 || robot.X > width || robot.Y < 0 || robot.Y > height)
+        ArgumentNullException.ThrowIfNull(robot);
+        if (!robotPositions.ContainsKey(robot))
         {
-            var position = (robot.X, robot.Y);
-            if (!scentPositions.Contains(position))
+            throw new InvalidOperationException("Robot not found in the grid.");
+        }
+        if (IsOutOfBounds(newPosition))
+        {
+            if (scentPositions.Contains((robot.X, robot.Y)))
             {
-                scentPositions.Add(position);
-                RobotLost?.Invoke($"Robot lost at position {position}.");
+                return (false, false); // Robot cannot move but is not lost
+            }
+            else
+            {
+                scentPositions.Add((robot.X, robot.Y));
+                robotPositions.Remove(robot);
+                return (false, true); // Robot is lost
             }
         }
+        robotPositions[robot] = newPosition;
+        return (true, false); // Robot moved successfully
+    }
+
+    private bool IsOutOfBounds((int X, int Y) position)
+    {
+        return position.X < 0 || position.X > width || position.Y < 0 || position.Y > height;
     }
 }

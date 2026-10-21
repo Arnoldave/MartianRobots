@@ -2,38 +2,39 @@
 
 public class Robot
 {
-    public event Action<Robot>? MoveRequested;
-
-    private Orientation Orientation { get; set; }
-    public int X { get; private set; }
-    public int Y { get; private set; }
+    private Grid? grid;
 
     public Robot(Orientation orientation, int x, int y)
     {
+        Lost = false;
         Orientation = orientation;
         X = x;
         Y = y;
     }
 
-    public void ProcessInstruction(Instruction instruction)
+    public bool Lost { get; private set; }
+    private Orientation Orientation { get; set; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
+
+    public void AddToGrid(Grid grid)
     {
-        switch (instruction)
-        {
-            case Instruction.L:
-                TurnLeft();
-                break;
-            case Instruction.R:
-                TurnRight();
-                break;
-            case Instruction.F:
-                MoveForward();
-                break;
-            default:
-                throw new ArgumentException($"Invalid instruction: {instruction}");
-        }
+        ArgumentNullException.ThrowIfNull(grid);
+        this.grid = grid;
     }
 
-    private void TurnLeft()
+    public string ProcessInstruction(Instruction instruction)
+    {
+        return instruction switch
+        {
+            Instruction.L => TurnLeft(),
+            Instruction.R => TurnRight(),
+            Instruction.F => MoveForward(),
+            _ => throw new ArgumentException($"Invalid instruction: {instruction}"),
+        };
+    }
+
+    private string TurnLeft()
     {
         Orientation = Orientation switch
         {
@@ -43,9 +44,11 @@ public class Robot
             Orientation.E => Orientation.N,
             _ => throw new ArgumentException($"Invalid orientation: {Orientation}")
         };
+
+        return ToString();
     }
 
-    private void TurnRight()
+    private string TurnRight()
     {
         Orientation = Orientation switch
         {
@@ -55,9 +58,11 @@ public class Robot
             Orientation.W => Orientation.N,
             _ => throw new ArgumentException($"Invalid orientation: {Orientation}")
         };
+
+        return ToString();
     }
 
-    private void MoveForward()
+    private string MoveForward()
     {
         var (x, y) = Orientation switch
         {
@@ -68,6 +73,25 @@ public class Robot
             _ => throw new ArgumentException($"Invalid orientation: {Orientation}")
         };
 
-        MoveRequested?.Invoke(this);
+        return Move(x, y);
+    }
+
+    private string Move(int x, int y)
+    {
+        var (canMove, lost) = grid?.TryMoveRobot(this, (x, y)) ?? throw new InvalidOperationException("Robot is not on a grid.");
+
+        Lost = lost;
+        if (canMove)
+        {
+            X = x;
+            Y = y;
+        }
+
+        return ToString();
+    }
+
+    public override string ToString()
+    {
+        return $"{X} {Y} {Orientation} {(Lost ? "LOST" : "")}";
     }
 }

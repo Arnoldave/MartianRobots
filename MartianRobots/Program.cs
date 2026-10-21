@@ -18,11 +18,23 @@ for (var i = 1; i < inputLines.Length; i += 2)
     grid.AddRobot(robot);
 }
 
+var outputLines = new List<string>();
+
 foreach (var (robot, instructions) in robotInstructions)
 {
+    var output = "";
+
     foreach (var instructionChar in instructions)
     {
         var instruction = Enum.Parse<Instruction>(instructionChar.ToString());
-        robot.ProcessInstruction(instruction);
+        output = robot.ProcessInstruction(instruction);
+        if (output.EndsWith("LOST"))
+        {
+            break;
+        }
     }
+
+    outputLines.Add(output);
 }
+
+Console.WriteLine(string.Join(Environment.NewLine, outputLines));
