@@ -16,6 +16,8 @@ for (var i = 1; i < inputLines.Length; i += 2)
 
     var robot = new Robot(orientation, x, y);
     grid.AddRobot(robot);
+
+    robotInstructions[robot] = inputLines[i + 1];
 }
 
 var outputLines = new List<string>();

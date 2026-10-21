@@ -34,6 +34,7 @@ public class Grid
         }
 
         robotPositions[robot] = position;
+        robot.AddToGrid(this);
     }
 
     public (bool canMove, bool lost) TryMoveRobot(Robot robot, (int X, int Y) newPosition)
