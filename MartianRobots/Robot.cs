@@ -13,7 +13,7 @@ public class Robot
     }
 
     public bool Lost { get; private set; }
-    private Orientation Orientation { get; set; }
+    public Orientation Orientation { get; private set; }
     public int X { get; private set; }
     public int Y { get; private set; }
 
@@ -92,6 +92,6 @@ public class Robot
 
     public override string ToString()
     {
-        return $"{X} {Y} {Orientation} {(Lost ? "LOST" : "")}";
+        return $"{X} {Y} {Orientation}{(Lost ? " LOST" : "")}";
     }
 }
