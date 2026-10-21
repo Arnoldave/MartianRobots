@@ -50,9 +50,8 @@ public class GridUnitTests
         addRobotAction.Should().NotThrow();
 
         // Verify that the robot is in the grid and its position is correct
-        var (canMove, lost) = grid.TryMoveRobot(robot, (2, 2));
-        canMove.Should().BeTrue();
-        lost.Should().BeFalse();
+        var result = grid.TryMoveRobot(robot, (2, 2));
+        result.Should().Be(MovementResult.CanMove);
     }
 
     [Fact]
@@ -91,10 +90,9 @@ public class GridUnitTests
         grid.AddRobot(robot2);
 
         // Now try to move robot2 out of bounds where the scent exists
-        var (canMove, lost) = grid.TryMoveRobot(robot2, (5, 6));
+        var result = grid.TryMoveRobot(robot2, (5, 6));
 
-        canMove.Should().BeFalse();
-        lost.Should().BeFalse();
+        result.Should().Be(MovementResult.CannotMove);
     }
 
     [Fact]
@@ -105,10 +103,9 @@ public class GridUnitTests
 
         grid.AddRobot(robot);
 
-        var (canMove, lost) = grid.TryMoveRobot(robot, (5, 6));
+        var result = grid.TryMoveRobot(robot, (5, 6));
 
-        canMove.Should().BeTrue();
-        lost.Should().BeTrue();
+        result.Should().Be(MovementResult.Lost);
     }
 
     [Fact]
@@ -119,9 +116,8 @@ public class GridUnitTests
 
         grid.AddRobot(robot);
 
-        var (canMove, lost) = grid.TryMoveRobot(robot, (5, 4));
+        var result = grid.TryMoveRobot(robot, (5, 4));
 
-        canMove.Should().BeTrue();
-        lost.Should().BeFalse();
+        result.Should().Be(MovementResult.CanMove);
     }
 }

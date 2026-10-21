@@ -38,7 +38,7 @@ public class Grid
         robot.AddToGrid(this);
     }
 
-    public (bool canMove, bool lost) TryMoveRobot(Robot robot, (int X, int Y) newPosition)
+    public MovementResult TryMoveRobot(Robot robot, (int X, int Y) newPosition)
     {
         ArgumentNullException.ThrowIfNull(robot);
         if (!robotPositions.ContainsKey(robot))
@@ -49,17 +49,17 @@ public class Grid
         if (!IsOutOfBounds(newPosition))
         {
             robotPositions[robot] = newPosition;
-            return (true, false); // Robot moved successfully
+            return MovementResult.CanMove;
         }
 
         if (scentPositions.Contains((robot.X, robot.Y)))
         {
-            return (false, false); // Robot cannot move but is not lost
+            return MovementResult.CannotMove;
         }
 
         scentPositions.Add((robot.X, robot.Y));
         robotPositions.Remove(robot);
-        return (true, true); // Robot is lost
+        return MovementResult.Lost;
     }
 
     private bool IsOutOfBounds((int X, int Y) position)

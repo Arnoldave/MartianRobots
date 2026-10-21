@@ -78,10 +78,10 @@ public class Robot
 
     private string Move(int x, int y)
     {
-        var (canMove, lost) = grid?.TryMoveRobot(this, (x, y)) ?? throw new InvalidOperationException("Robot is not on a grid.");
+        var movementResult = grid?.TryMoveRobot(this, (x, y)) ?? throw new InvalidOperationException("Robot is not on a grid.");
 
-        Lost = lost;
-        if (canMove)
+        Lost = movementResult == MovementResult.Lost;
+        if (movementResult is MovementResult.CanMove or MovementResult.Lost)
         {
             X = x;
             Y = y;
