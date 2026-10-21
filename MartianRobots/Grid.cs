@@ -28,6 +28,7 @@ public class Grid
         {
             throw new ArgumentException($"Robot position {position} is out of grid bounds.");
         };
+
         if (robotPositions.ContainsValue(position))
         {
             throw new InvalidOperationException($"A robot already exists at position {position}.");
@@ -44,21 +45,21 @@ public class Grid
         {
             throw new InvalidOperationException("Robot not found in the grid.");
         }
-        if (IsOutOfBounds(newPosition))
+
+        if (!IsOutOfBounds(newPosition))
         {
-            if (scentPositions.Contains((robot.X, robot.Y)))
-            {
-                return (false, false); // Robot cannot move but is not lost
-            }
-            else
-            {
-                scentPositions.Add((robot.X, robot.Y));
-                robotPositions.Remove(robot);
-                return (false, true); // Robot is lost
-            }
+            robotPositions[robot] = newPosition;
+            return (true, false); // Robot moved successfully
         }
-        robotPositions[robot] = newPosition;
-        return (true, false); // Robot moved successfully
+
+        if (scentPositions.Contains((robot.X, robot.Y)))
+        {
+            return (false, false); // Robot cannot move but is not lost
+        }
+
+        scentPositions.Add((robot.X, robot.Y));
+        robotPositions.Remove(robot);
+        return (true, true); // Robot is lost
     }
 
     private bool IsOutOfBounds((int X, int Y) position)
