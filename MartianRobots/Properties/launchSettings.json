@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MartianRobots": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
