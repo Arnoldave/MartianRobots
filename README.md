@@ -46,3 +46,19 @@ To run the unit tests in the command line, run the following:
 cd {Install Location}/MartianRobots/MartianRobots.UnitTests // e.g. cd C://Users/Dan/source/repos/MartianRobots/MartianRobots.UnitTests
 dotnet test MartianRobots.UnitTests.csproj
 ```
+
+# Technical Decisions
+
+
+
+# Taking the Solution further
+
+
+
+# AI Usage
+
+Visual Studio's inbuilt Copilot tools were used to assist in development. For the most part, it was used in the form of the file editor auto-complete tool, as I would begin implementing a method or property, it would predictively complete the implementation. I would then review that suggestion, and make changes whenever I felt appropriate.
+
+In some cases, I would also use the agent chat client, usually to ask specific questions, akin to how a developer would look up a StackOverflow thread in the past. For example, I asked for a reminder of how delegates were declared, when I was considering them for an event based implementation.
+
+In one case, I asked the agent to implement a small change for me, specifically changing the return type of a method from two booleans, to an enum type, and fixing the resultant syntax errors. The evidence of this interaction has been committed to the repo.
