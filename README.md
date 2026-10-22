@@ -47,13 +47,11 @@ cd {Install Location}/MartianRobots/MartianRobots.UnitTests // e.g. cd C://Users
 dotnet test MartianRobots.UnitTests.csproj
 ```
 
-# Technical Decisions
-
-
-
 # Taking the Solution further
 
+If I was to take this implementation further, I would implement it as a microservice model. I would expect there to be a REST API, and an associated UI platform for consuming instructions from users, and sending those forward to robot instances. As instructions are consumed, the API would send events to a second service via an event queue service, such as Service Bus, or Rabbit MQ; this event would process these instructions, and send them to the corresponding robot, each of which would run as its own instance.
 
+The primary service would persist data on the current positions of robots, which have been lost, and what scents they have left via a relational database, such as PostgreSql, or SQL Server.
 
 # AI Usage
 
